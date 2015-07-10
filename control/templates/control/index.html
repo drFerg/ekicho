@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+
+<h1 class="page-header">Dispatcher</h1>
+
+<ul id="sortable">
+<li class="col-md-6 ui-state-default">
+  <div class="sound-panel train-card panel panel-default">
+    <div class="panel-heading">
+      <div class="tannoy-title">Station Tannoy</div>
+    </div>
+    <div class="panel-body">
+      <ul class="nav nav-pills nav-stacked col-md-4" id="tannoy-tabs">
+        <li role="presentation" class="active"><a href="#melody" aria-controls="melody" role="tab" data-toggle="pill">Melody</a></li>
+        <li role="presentation"><a href="#announcement" aria-controls="announcement" role="tab" data-toggle="pill">Announcement</a></li>
+        <li role="presentation"><a href="#doors" aria-controls="doors" role="tab" data-toggle="pill">Doors</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade in active" id="melody">
+          <div class="list-group col-md-8">
+            <button type="button" class="list-group-item" onclick="document.getElementById('yamanote_chime').play()">
+              Yamanote chime
+            </button>
+            <button type="button" class="list-group-item" onclick="document.getElementById('yamanote_tabata_tune').play()">
+              Melody - Tabata Station
+            </button>
+            <button type="button" class="list-group-item">Morbi leo risus</button>
+            <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+            <button type="button" class="list-group-item">Vestibulum at eros</button>
+          </div> 
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="announcement">
+          <div class="list-group col-md-6">
+            <button type="button" class="list-group-item">dog chime</button>
+            <button type="button" class="list-group-item">Melody - Tabata Station</button>
+            <button type="button" class="list-group-item">Morbi leo risus</button>
+            <button type="button" class="list-group-item">Porta ac consectetur ac</button>
+            <button type="button" class="list-group-item">Vestibulum at eros</button>
+          </div> 
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="doors">
+          <ul class="list-group col-md-8">
+            <li class="list-group-item">Akihabara platform
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default" onclick="document.getElementById('yamanote_akihabara_doors_1').play()">
+                  1
+                </button>
+                <button type="button" class="btn btn-default" onclick="document.getElementById('yamanote_akihabara_doors_2').play()">
+                  2
+                </button>
+                <button type="button" class="btn btn-default" onclick="document.getElementById('yamanote_akihabara_doors_3').play()">
+                  3
+                </button>
+                <button type="button" class="btn btn-default" onclick="document.getElementById('yamanote_akihabara_doors_4').play()">
+                  4
+                </button>
+              </div>
+            </li>
+            <li class="list-group-item">Tokyo platform
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default" onclick="document.getElementById('yamanote_akihabara_doors_1').play()">
+                  1
+                </button>
+                <button type="button" class="btn btn-default" onclick="document.getElementById('yamanote_akihabara_doors_2').play()">
+                  2
+                </button>
+                <button type="button" class="btn btn-default" onclick="document.getElementById('yamanote_akihabara_doors_3').play()">
+                  3
+                </button>
+                <button type="button" class="btn btn-default" onclick="document.getElementById('yamanote_akihabara_doors_4').play()">
+                  4
+                </button>
+              </div>
+            </li>
+          </ul> 
+        </div>
+      </div>
+    </div>
+  </div>
+</li>
+
+<audio id="yamanote_chime" preload="none" src="{% static 'sounds/yamanote_info_chime.mp3' %}"></audio>
+<audio id="yamanote_tabata_tune" preload="none" src="{% static 'sounds/yamanote_tabata_tune.mp3' %}"></audio>
+<audio id="yamanote_akihabara_doors_1" preload="none" src="{% static 'sounds/yamanote_akihabara_doors_1.mp3' %}"></audio>
+<audio id="yamanote_akihabara_doors_2" preload="none" src="{% static 'sounds/yamanote_akihabara_doors_2.mp3' %}"></audio>
+<audio id="yamanote_akihabara_doors_3" preload="none" src="{% static 'sounds/yamanote_akihabara_doors_3.mp3' %}"></audio>
+<audio id="yamanote_akihabara_doors_4" preload="none" src="{% static 'sounds/yamanote_akihabara_doors_4.mp3' %}"></audio>
+
+
+
+
+
+
+
+{% for s in stock %}
+  <li class="col-md-6 ui-state-default">
+    <div class="train-card panel panel-default">
+    <div class="panel-heading">
+      <div class="train-id">{{ s.id }}</div>
+      <div class="train-name">{{ s.train.series }} - {{ s.train.name }}</div>
+      <div class="btn train-settings" data-toggle="modal" data-target="#train-modal-{{ s.id }}"><i class="fa fa-cog fa-2x"></i></div>
+    </div>
+    <div class="panel-body">
+      <div class="train-info">
+        <div class="train-make">{{ s.train.manufacturer }}</div>
+        <div class="train-size">{{ s.train.length }} car</div>
+        <div class="train-type">{{ s.train.get_type_display }}</div>
+      </div>
+      <div class="train-controls">
+        <div id="train-gauge-{{ s.id }}" class="200x160px train-gauge train-font"></div>
+        <div>
+          <input id="s_{{ s.id }}" type="text" data-slider-ticks="[0, 25, 50, 75, 100]" data-slider-ticks-snap-bounds="1" data-slider-orientation="horizontal" data-slider-value="{{ s.speed }}" data-slider-handle="square"/>
+        </div>
+        <div class="btn-group btn-group-lg train-buttons" role="group" aria-label="...">
+          <button type="button" class="btn btn-default bwd_button_{{ s.id }}"><i class="fa fa-backward"></i></button>
+          <button type="button" class="btn btn-default stop_button_{{ s.id }}"><i class="fa fa-stop"></i></button>
+          <button type="button" class="btn btn-default fwd_button_{{ s.id }}"><i class="fa fa-forward"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </li>
+{% endfor %}
+
+</ul>
+
+<div class="train-modals">
+{% for s in stock %}
+  <div class="modal fade" id="train-modal-{{ s.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Edit: {{ s.train.series }} - {{ s.train.name }}</h4>
+        </div>
+        <div class="modal-body">
+          <form class="">
+            <div class="form-group col-md-4">
+              <div class="input-group">
+                <div class="input-group-addon">Series</div>
+                <input type="text" class="form-control" id="trainSeries" value="{{ s.train.series }}">
+              </div>
+            </div>
+            <div class="form-group col-md-4">
+              <div class="input-group">
+                <div class="input-group-addon">Name</div>
+                <input type="text" class="form-control" id="trainName" value="{{ s.train.name }}">
+              </div>
+            </div>
+           <div class="form-group col-md-4">
+              <div class="input-group">
+                <div class="input-group-addon">DCC Address</div>
+                <input type="text" class="form-control" id="dccAddress" value="{{ s.address }}">
+              </div>
+            </div>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}
+
+{% block js %}
+var refresh_speed = 1000;
+
+{% for s in stock %}
+  var g_{{ s.id }};
+  var int_{{ s.id }};
+  var cur_speed_{{ s.id }} = {{ s.speed }};
+
+  g_{{ s.id }} = new JustGage({
+    id: "train-gauge-{{ s.id }}",
+    value: {{ s.speed }},
+    min: 0,
+    max: 100,
+    title: "Speed"
+  });
+
+
+  $("#s_{{ s.id }}").slider({
+    ticks: [0, 25, 50, 75, 100],
+    ticks_snap_bounds: 1,
+    reversed: false
+  });
+
+  $("#s_{{ s.id }}").on('slideStop', function(slideEvent) {
+    g_{{ s.id }}.refresh(slideEvent.value);
+    clearInterval(int_{{ s.id }});
+    console.log(slideEvent.value);
+    $.ajax({
+     type:"POST",
+     url:"/updateSpeed/",
+     data: { 'id': {{ s.id }},
+             'speed': slideEvent.value,
+              'csrfmiddlewaretoken': csrftoken,
+            },
+     success: function(){
+      console.log("Sent: " + slideEvent.value );
+     }
+});
+    int_{{ s.id }} = setInterval("refresh_{{ s.id }}()", refresh_speed);
+  });
+
+  function refresh_{{ s.id }}() {
+    $.ajax({
+      type:"POST",
+      url:"/getSpeed/",
+      data: { 'id': {{ s.id }},
+              'csrfmiddlewaretoken': csrftoken,
+            },
+      success: function(speed){
+      if (Number(speed) != cur_speed_{{ s.id }}) {
+        cur_speed_{{ s.id }} = Number(speed);
+        g_{{ s.id }}.refresh(cur_speed_{{ s.id }});
+        $("#s_{{ s.id }}").slider('setValue', cur_speed_{{ s.id }});
+      }
+     }
+  });
+  };
+
+  $(".stop_button_{{ s.id }}").button().click(function(event) {
+    event.preventDefault();
+    clearInterval(int_{{ s.id }});
+    g_{{ s.id }}.refresh(0);
+    $("#s_{{ s.id }}").slider('setValue', 0);
+    $.ajax({
+     type:"POST",
+     url:"/updateSpeed/",
+     data: { 'id': {{ s.id }},
+             'speed': 0,
+              'csrfmiddlewaretoken': csrftoken,
+            },
+     success: function(){
+      console.log("Sent: Stop");
+     }
+});
+    int_{{ s.id }} = setInterval("refresh_{{ s.id }}()", refresh_speed);
+      });
+
+  $(".fwd_button_{{ s.id }}").button().click(function(event) {
+    event.preventDefault();
+    clearInterval(int_{{ s.id }});
+    g_{{ s.id }}.refresh(0);
+    $("#s_{{ s.id }}").slider('setValue', 0);
+    $.ajax({
+     type:"POST",
+     url:"/updateDir/",
+     data: { 'id': {{ s.id }},
+             'dir': 2,
+              'csrfmiddlewaretoken': csrftoken,
+            },
+     success: function(){
+      console.log("Sent: Fwd");
+     }
+      });
+    });
+
+    $(".bwd_button_{{ s.id }}").button().click(function(event) {
+    event.preventDefault();
+    clearInterval(int_{{ s.id }});
+    g_{{ s.id }}.refresh(0);
+    $("#s_{{ s.id }}").slider('setValue', 0);
+    $.ajax({
+     type:"POST",
+     url:"/updateDir/",
+     data: { 'id': {{ s.id }},
+             'dir': 3,
+              'csrfmiddlewaretoken': csrftoken,
+            },
+     success: function(){
+      console.log("Sent: Bwd");
+     }
+      });
+    });
+
+{% endfor %}
+
+{% endblock %}
+
+{% block js_ready %}
+$('#tannoy-tabs a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+
+{% for s in stock %}
+
+refresh_{{ s.id }}();
+int_{{ s.id }} = setInterval("refresh_{{ s.id }}()", refresh_speed);
+
+{% endfor %}
+{% endblock %}
