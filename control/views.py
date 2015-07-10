@@ -3,7 +3,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse
 from .models import RollingStock
 from django.template.context_processors import csrf
-from EngineRoom.engineClient import EngineClient
+from shasho.engineClient import EngineClient
 
 
 UDP_IP = "127.0.0.1"
