@@ -7,6 +7,24 @@
 
 <ul id="sortable">
 <li class="col-md-6 ui-state-default">
+    <div class="train-card panel panel-default">
+    <div class="panel-heading">
+      <div class="tannoy-title">Turnout Control</div>
+    </div>
+    <div class="panel-body">
+      <div class="btn-group btn-group-lg train-buttons" role="group" aria-label="...">
+        <button type="button" class="btn btn-default point-1">1</button>
+        <button type="button" class="btn btn-default point-2">2</button>
+        <button type="button" class="btn btn-default point-3">3</button>
+      </div>
+    </div>
+  </div>
+  </li>
+
+
+
+
+<li class="col-md-6 ui-state-default">
   <div class="sound-panel train-card panel panel-default">
     <div class="panel-heading">
       <div class="tannoy-title">Station Tannoy</div>
@@ -137,29 +155,31 @@
           <h4 class="modal-title" id="myModalLabel">Edit: {{ s.train.series }} - {{ s.train.name }}</h4>
         </div>
         <div class="modal-body">
-          <form class="">
+          <form class="form-{{ s.id }}" action="/updateTrain/" method="post">
+             {% csrf_token %}
+            <input type="hidden" name="id" value="{{ s.id }}">
             <div class="form-group col-md-4">
               <div class="input-group">
                 <div class="input-group-addon">Series</div>
-                <input type="text" class="form-control" id="trainSeries" value="{{ s.train.series }}">
+                <input type="text" class="form-control" id="trainSeries" name="train-series" value="{{ s.train.series }}">
               </div>
             </div>
             <div class="form-group col-md-4">
               <div class="input-group">
                 <div class="input-group-addon">Name</div>
-                <input type="text" class="form-control" id="trainName" value="{{ s.train.name }}">
+                <input type="text" class="form-control" id="trainName" name="train-name" value="{{ s.train.name }}">
               </div>
             </div>
            <div class="form-group col-md-4">
               <div class="input-group">
                 <div class="input-group-addon">DCC Address</div>
-                <input type="text" class="form-control" id="dccAddress" value="{{ s.address }}">
+                <input type="text" class="form-control" id="dccAddress" name="train-addr" value="{{ s.address }}">
               </div>
             </div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="close-{{ s.id }} btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="submit-{{ s.id }} btn btn-primary">Save</button>
         </div>
       </div>
     </div>
@@ -293,7 +313,60 @@ $('#tannoy-tabs a').click(function (e) {
   $(this).tab('show')
 })
 
+$(".point-1").button().click(function(event) {
+    $.ajax({
+     type:"POST",
+     url:"/point/",
+     data: { 'id': 1,
+              'csrfmiddlewaretoken': csrftoken,
+            },
+     success: function(){
+      console.log("Sent: Switch point 1");
+     }
+  });
+});
+
+$(".point-2").button().click(function(event) {
+    $.ajax({
+     type:"POST",
+     url:"/point/",
+     data: { 'id': 2,
+              'csrfmiddlewaretoken': csrftoken,
+            },
+     success: function(){
+      console.log("Sent: Switch point 2");
+     }
+  });
+});
+
+$(".point-3").button().click(function(event) {
+    $.ajax({
+     type:"POST",
+     url:"/point/",
+     data: { 'id': 3,
+              'csrfmiddlewaretoken': csrftoken,
+            },
+     success: function(){
+      console.log("Sent: Switch point 3");
+     }
+  });
+});
+
 {% for s in stock %}
+
+$(".submit-{{ s.id }}").button().click(function(event) {
+  event.preventDefault();
+  console.log("Hello");
+  $(".form-{{ s.id }}").submit();
+});
+
+$('.form-{{ s.id }}').ajaxForm(function() { 
+  $(".submit-{{ s.id }}").html("Saved!"); 
+});
+
+$(".close-{{ s.id }}").button().click(function(event) {
+  $(".submit-{{ s.id }}").html("Save");
+});
 
 refresh_{{ s.id }}();
 int_{{ s.id }} = setInterval("refresh_{{ s.id }}()", refresh_speed);

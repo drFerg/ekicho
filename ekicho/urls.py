@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'^updateSpeed/', views.updateSpeed, name='updateSpeed'),
     url(r'^getSpeed/', views.getSpeed, name='getSpeed'),
     url(r'^updateDir/', views.updateDir, name='updateDir'),
+    url(r'^updateTrain/', views.updateTrain, name='updateTrain'),
+    url(r'^point/', views.point, name='point'),
 ]
 
 # Service MEDIA from here if in DEBUG mode.

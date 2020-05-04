@@ -35,7 +35,22 @@ def updateDir(request):
     e.setDirection(train.address, train.direction)
     return HttpResponse(train.direction)
 
+def updateTrain(request):
+    train = RollingStock.objects.get(id=request.POST['id'])
+    train.name = request.POST['train-name']
+    train.series = request.POST['train-series']
+    addr = int(request.POST['train-addr'])
+    if (train.address != addr):
+        e.setAddr(train.address, addr)
+        train.address = addr
+    train.save()
+    return HttpResponse("Set")
 
 def getSpeed(request):
     train = RollingStock.objects.get(id=request.POST['id'])
     return HttpResponse(train.speed)
+
+def point(request):
+    point = int(request.POST['id'])
+    e.switchPoint(point)
+    return HttpResponse("Point switched")
